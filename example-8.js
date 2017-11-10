@@ -55,7 +55,7 @@ board.on("ready",function(){
             io.sockets.emit("messageToClient", "Value = " + value);
         }
         last_sent = last_value;
-    }, 1000); // execute after 50ms
+    }, 100); // execute after 50ms
                 
     last_value = value; // this is read from pin 2 many times per s
 }); // end board.digitalRead on pin 2
