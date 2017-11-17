@@ -53,7 +53,7 @@
             socket.on('disconnect', function() { // on disconnect
                 log("Disconnected from server"); // we print the status to div
             });
-              function log(msg) {
+            function log(msg) {
                 divElement.innerHTML += "<div>" + msg + "</div>"; // we print it to div
             }
             
@@ -61,7 +61,13 @@
                 log(msg); // add msg
             });
            
+            socket.on('messageToClient', function(msg) { // when we receive the message
+                log(msg); // we print it to div
+            });
             
+            socket.on('disconnect', function() { // on disconnect
+                log("Disconnected from server"); // we print the status to div
+            });
         </script>
         </body>
         </html>

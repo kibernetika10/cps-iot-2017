@@ -25,45 +25,47 @@ function handler(req, res){
 http.listen(8080);
 //var ValuePWM=0;
 
+//var sendValueViaSocket = function(){};
 var sendValueViaSocket = function(){};
+//var timeout = false;
+//var last_value = 0;
+//var last_sent =0;
 board.on("ready",function(){
-    io.socket.on("sendPWM", function(pwm){
-        board.analogWrite(3,pwm);
-
-        io.socket.emit("messageToClient", "PWM set to: " + pwm);        
-    });
-    
-    io.socket.on("left", function(value){
-        board.digitalWrite(2,value.AIN1);
-        board.digitalWrite(4,value.AIN2);
-        io.socket.emit("messageToClient", "Direction: left");
-    });
-    
-    io.socket.on("right", function(value){
-        board.digitalWrite(2,value.AIN1);
-        board.digitalWrite(4,value.AIN2);
-        io.socket.emit("messageToClient", "Direction: right");
-    });
-    
-   io.socket.on("stop", function(value){
-        board.analogWrite(3,value);
-        io.socket.emit("messageToClient", "STOP");
-    });
-    /*io.sockets.on("connection",function(socket){
+     io.sockets.on("connection",function(socket){
         console.log("Socket id:"+socket.id);
         socket.emit("messageToClient","Src connected, board OK");
         sendValueViaSocket = function(value){
             io.sockets.emit("messageToClient",value);
         }
-    });*/
-    
-    
-    /*io.socket.on('messageToClient', function(msg) { // when we receive the message
-        log(msg); // we print it to div
+        socket.on("sendPWM", function(pwm){
+            board.analogWrite(3,pwm);
+            socket.emit("messageToClient", "PWM set to: " + pwm);   
+            console.log(pwm);
+        });
+        
+        socket.on("left", function(value){
+            board.digitalWrite(2,value.AIN1);
+            board.digitalWrite(4,value.AIN2);
+            socket.emit("messageToClient", "Direction: left");
+        });
+        
+        socket.on("right", function(value){
+            board.digitalWrite(2,value.AIN1);
+            board.digitalWrite(4,value.AIN2);
+            socket.emit("messageToClient", "Direction: right");
+        });
+        
+       socket.on("stop", function(value){
+            board.analogWrite(3,value);
+            socket.emit("messageToClient", "STOP");
+        });
     });
     
-    io.socket.on('disconnect', function() { // on disconnect
-    log("Disconnected from server"); // we print the status to div
-});*/
    
+    
+   /*board.digitalRead(2, function(value) { // this happens many times on digital input change of state 0->1 or 1->0
+    
+    
+   }); // end board.digitalRead on pin 2*/
+
 });
