@@ -35,7 +35,7 @@ var intervalCtrl; // var for setInterval in global space
 var Kp = 0.055; // proportional factor
 var Ki = 0.0008; // integral factor
 var Kd = 0.015; // differential factor
-var pwm = 0;
+//var pwm = 0;
 var pwmLimit = 254;
 
 var err = 0; // variable for second pid implementation
@@ -53,16 +53,17 @@ board.on("ready", function() {
         actualValue = value; // continuous read of pin A1
     });
     
-    startControlAlgorithm();
+    //startControlAlgorithm();
     
     io.sockets.on("connection", function(socket) {
         socket.emit("messageToClient", "Server connected, board ready.");
         socket.emit("staticMsgToClient", "Server connected, board ready.")
         setInterval(sendValues, 40, socket); // na 40ms we send message to client
         
-        socket.on("startControlAlgorithm", function(){
-        startControlAlgorithm();
-        });
+        //socket.on("startControlAlgorithm", function(numberOfControlAlgorithm){
+        //startControlAlgorithm();
+        //    startControlAlgorithm(numberOfControlAlgorithm);
+        //});
         socket.on("startControlAlgorithm", function(numberOfControlAlgorithm){
             startControlAlgorithm(numberOfControlAlgorithm);
         });
@@ -87,24 +88,8 @@ function sendValues (socket) {
     "actualValue": actualValue
     });
 };
-function startControlAlgorithm (parameters) {
-    if (controlAlgorihtmStartedFlag == 0) {
-        controlAlgorihtmStartedFlag = 1; // set flag that the algorithm has started
-        //intervalCtrl = setInterval(function() {controlAlgorithm(); }, 30); // na 30ms klic
-        //console.log("Control algorithm started");
-        intervalCtrl = setInterval(function() {controlAlgorithm(parameters); }, 30); // na 30ms klic
-        console.log("Control algorithm " + parameters.ctrlAlgNo + " started");
-        sendStaticMsgViaSocket("Control algorithm " + parameters.ctrlAlgNo + " started | " + json2txt(parameters));
-    }
-};
-function stopControlAlgorithm () {
-    clearInterval(intervalCtrl); // clear the interval of control algorihtm
-    board.analogWrite(3,0); // write 0 on pwm pin to stop the motor
-    controlAlgorihtmStartedFlag = 0; // set flag that the algorithm has stopped
-    pwm = 0; // set pwm to 0
-    console.log("ctrlAlg STOPPED");
-    sendStaticMsgViaSocket("Stop");
-};
+
+
 
 function sendValues (socket) {
     socket.emit("clientReadValues",
@@ -138,6 +123,24 @@ function controlAlgorithm (parameters) {
           if (pwm < 0) {board.digitalWrite(2,0); board.digitalWrite(4,1);}; // določimo smer če je < 0
           board.analogWrite(3, Math.abs(pwm));
     }
+};
+function startControlAlgorithm (parameters) {
+    if (controlAlgorihtmStartedFlag == 0) {
+        controlAlgorihtmStartedFlag = 1; // set flag that the algorithm has started
+        //intervalCtrl = setInterval(function() {controlAlgorithm(); }, 30); // na 30ms klic
+        //console.log("Control algorithm started");
+        intervalCtrl = setInterval(function() {controlAlgorithm(parameters); }, 30); // na 30ms klic
+        console.log("Control algorithm " + parameters.ctrlAlgNo + " started");
+        sendStaticMsgViaSocket("Control algorithm " + parameters.ctrlAlgNo + " started | " + json2txt(parameters));
+    }
+};
+function stopControlAlgorithm () {
+    clearInterval(intervalCtrl); // clear the interval of control algorihtm
+    board.analogWrite(3,0); // write 0 on pwm pin to stop the motor
+    controlAlgorihtmStartedFlag = 0; // set flag that the algorithm has stopped
+    pwm = 0; // set pwm to 0
+    console.log("ctrlAlg STOPPED");
+    sendStaticMsgViaSocket("Stop");
 };
 
 function json2txt(obj) // function to print out the json names and values

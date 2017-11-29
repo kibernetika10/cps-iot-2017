@@ -12,15 +12,32 @@
             <canvas id="canvas1" width ="200" height = "100" style="border: 1px dashed #00c3c3;"></canvas>    
              </div>    
              
+             <div id="divForStaticPrint"> </div>
+            <p></p>
+             
             <div id ="print1"></div></div>
-            <button id="buttonStartControlAlgorithm" onClick="startControlAlgorithm()">Start Ctrl Alg</button>
+            pCoeff: <input id="pCoeff" value="0.1" size="5" />
+            <button id="buttonStartControlAlgorithm1" onClick="startControlAlgorithm1()">Start Ctrl Alg1</button>
+            <button id="buttonStopControlAlgorithm" onClick="stopControlAlgorithm()">Stop Ctrl Alg</button>
+            <p></p>
+            <input id="Kp1" value="0.15" size="5" />
+            <input id="Ki1" value="0.0055" size="5" />
+            <input id="Kd1" value="0.25" size="5" />
+            <button id="buttonStartControlAlgorithm2" onClick="startControlAlgorithm2()">Start Ctrl Alg2</button>
+            <button id="buttonStopControlAlgorithm2" onClick="stopControlAlgorithm()">Stop Ctrl Alg</button>
+            <p></p>
+            <div id="divForStaticPrint"> </div>
+            <p></p>
             <button id="buttonStopControlAlgorithm" onClick="stopControlAlgorithm()">Stop Ctrl Alg</button>
             
             <script type="text/javascript" src="socket.io/socket.io.js"></script>
             <script type="text/javascript">
             
+            
+            
             "use strict";
             
+
             var numberOfLinesBeforeScroll = 10;
             var linesPrintCounter = 0;
             
@@ -50,15 +67,30 @@
                 }
                 linesPrintCounter++;
             }
-            function startControlAlgorithm () {
-                socket.emit("startControlAlgorithm");
+            //function startControlAlgorithm () {
+            //    socket.emit("startControlAlgorithm");
+            //}
+            function startControlAlgorithm1 () {
+                // first stop ctrlAlg, just in case
+                stopControlAlgorithm ();
+                var pCoeff = document.getElementById("pCoeff").value;
+                socket.emit("startControlAlgorithm", {"ctrlAlgNo": 1, "pCoeff": pCoeff}); // send pCoeff value
+            }
+             
+            function startControlAlgorithm2 () {
+                // first stop ctrlAlg, just in case
+                stopControlAlgorithm ();
+                var Kp1 = document.getElementById("Kp1").value;
+                var Ki1 = document.getElementById("Ki1").value;
+                var Kd1 = document.getElementById("Kd1").value;
+                socket.emit("startControlAlgorithm", {"ctrlAlgNo": 2, "Kp1": Kp1, "Ki1": Ki1, "Kd1": Kd1}); // send also parameters
             }
             
             function stopControlAlgorithm () {
                 socket.emit("stopControlAlgorithm");
             }
             socket.on("startControlAlgorithm", function(){
-                startControlAlgorithm();
+                startControlAlgorithm1();
             });
                 
             socket.on("stopControlAlgorithm", function(){
@@ -84,9 +116,13 @@
             socket.on("messageToClient", function (msg){
                 log(msg); // add msg
             });
-            /*socket.on("disconnect", function(){
+ 
+            socket.on('staticMsgToClient', function(msg) { // when we receive the message
+                document.getElementById("divForStaticPrint").innerHTML = "Status: " + msg; // we print it to div
+            });
+            socket.on("disconnect", function(){
                 log("Disconnected from the server"); // we print status of disconn. to div
-            });*/
+            });
            socket.on("clientReadValues", function(value) {
                 //log(value.desiredValue);
                 
