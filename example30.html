@@ -158,7 +158,7 @@ var final_trs;
         // *********************************************************************
         // LEFT
         // *********************************************************************    
-        if(interim_transcript == "left" || interim_transcript == " left" || interim_transcript == "last" || interim_transcript == " last" || interim_transcript == " let" || interim_transcript == "let" || interim_transcript == "Lyft" || interim_transcript == " Lyft" || interim_transcript == "lift" || interim_transcript == " lift") // since the pause is made during the speech, the space should also be considered, i.e. +1, t.j. " 1"
+        if(interim_transcript == "multiplication" || interim_transcript == "left" || interim_transcript == " left" || interim_transcript == "last" || interim_transcript == " last" || interim_transcript == " let" || interim_transcript == "let" || interim_transcript == "Lyft" || interim_transcript == " Lyft" || interim_transcript == "lift" || interim_transcript == " lift") // since the pause is made during the speech, the space should also be considered, i.e. +1, t.j. " 1"
         {
             socket.emit("left", 1);
         };
